@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Controller
  * @subpackage Zend_Controller_Action_Helper
- * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Redirector.php 16971 2009-07-22 18:05:45Z mikaelkael $
+ * @version    $Id: Redirector.php 22959 2010-09-17 21:00:04Z dragonbe $
  */
 
 /**
@@ -29,7 +29,7 @@ require_once 'Zend/Controller/Action/Helper/Abstract.php';
  * @category   Zend
  * @package    Zend_Controller
  * @subpackage Zend_Controller_Action_Helper
- * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Controller_Action_Helper_Redirector extends Zend_Controller_Action_Helper_Abstract
@@ -463,7 +463,7 @@ class Zend_Controller_Action_Helper_Redirector extends Zend_Controller_Action_He
      */
     public function gotoUrlAndExit($url, array $options = array())
     {
-        $this->gotoUrl($url, $options);
+        $this->setGotoUrl($url, $options);
         $this->redirectAndExit();
     }
 
