@@ -15,8 +15,9 @@
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Sitemap.php 20105 2010-01-06 21:28:26Z matthew $
  */
 
 /**
@@ -32,7 +33,7 @@ require_once 'Zend/View/Helper/Navigation/HelperAbstract.php';
  * @category   Zend
  * @package    Zend_View
  * @subpackage Helper
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_View_Helper_Navigation_Sitemap
@@ -259,10 +260,17 @@ class Zend_View_Helper_Navigation_Sitemap
      */
     protected function _xmlEscape($string)
     {
+        $enc = 'UTF-8';
+        if ($this->view instanceof Zend_View_Interface
+            && method_exists($this->view, 'getEncoding')
+        ) {
+            $enc = $this->view->getEncoding();
+        }
+
         // TODO: remove check when minimum PHP version is >= 5.2.3
         if (version_compare(PHP_VERSION, '5.2.3', '>=')) {
             // do not encode existing HTML entities
-            return htmlspecialchars($string, ENT_QUOTES, 'UTF-8', false);
+            return htmlspecialchars($string, ENT_QUOTES, $enc, false);
         } else {
             $string = preg_replace('/&(?!(?:#\d++|[a-z]++);)/ui', '&amp;', $string);
             $string = str_replace(array('<', '>', '\'', '"'), array('&lt;', '&gt;', '&#39;', '&quot;'), $string);

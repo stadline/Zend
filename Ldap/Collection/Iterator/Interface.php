@@ -12,48 +12,35 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @package    Zend_Pdf
+ * @category   Zend
+ * @package    Zend_Ldap
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Interface.php 17826 2009-08-26 15:01:34Z sgehrig $
  */
-
-
-/** Zend_Pdf_Parser */
-require_once 'Zend/Pdf/Parser.php';
-
 
 /**
- * PDF object stream parser
+ * Zend_Ldap_Collection_Iterator_Interface provides a contract for
+ * adapter specific collection iterators
  *
- * @package    Zend_Pdf
+ * @category   Zend
+ * @package    Zend_Ldap
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Pdf_Parser_Stream extends Zend_Pdf_Parser
+interface Zend_Ldap_Collection_Iterator_Interface extends Iterator, Countable
 {
     /**
-     * Get Trailer object
+     * Closes the current result set
      *
-     * @return Zend_Pdf_Trailer_Keeper
+     * @return boolean
      */
-    public function getTrailer()
-    {
-        throw new Zend_Pdf_Exception('Stream object parser doesn\'t contain trailer information.');
-    }
+    public function close();
 
     /**
-     * Object constructor
+     * Gets the current LDAP connection.
      *
-     * @param string $pdfString
-     * @param Zend_Pdf_ElementFactory $factory
-     * @throws Zend_Exception
+     * @return Zend_Ldap
      */
-    public function __construct(&$source, Zend_Pdf_ElementFactory $factory)
-    {
-        $this->_current        = 0;
-        $this->_currentContext = null;
-        $this->_contextStack   = array();
-        $this->_elements       = new Zend_Pdf_PhpArray();
-        $this->_objFactory     = $factory;
-    }
+    public function getLdap();
 }

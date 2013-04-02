@@ -15,17 +15,18 @@
  * @category   Zend
  * @package    Zend_Search_Lucene
  * @subpackage Search
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Default.php 18946 2009-11-12 11:48:58Z alexander $
  */
 
-/** Zend_Search_Lucene_Search_Highlighter_Interface */
+/** @see Zend_Search_Lucene_Search_Highlighter_Interface */
 require_once 'Zend/Search/Lucene/Search/Highlighter/Interface.php';
 /**
  * @category   Zend
  * @package    Zend_Search_Lucene
  * @subpackage Search
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Search_Lucene_Search_Highlighter_Default implements Zend_Search_Lucene_Search_Highlighter_Interface
@@ -64,7 +65,7 @@ class Zend_Search_Lucene_Search_Highlighter_Default implements Zend_Search_Lucen
      */
     public function setDocument(Zend_Search_Lucene_Document_Html $document)
     {
-    	$this->_doc = $document;
+        $this->_doc = $document;
     }
 
     /**
@@ -74,7 +75,7 @@ class Zend_Search_Lucene_Search_Highlighter_Default implements Zend_Search_Lucen
      */
     public function getDocument()
     {
-    	return $this->_doc;
+        return $this->_doc;
     }
 
     /**
@@ -84,10 +85,10 @@ class Zend_Search_Lucene_Search_Highlighter_Default implements Zend_Search_Lucen
      */
     public function highlight($words)
     {
-    	$color = $this->_highlightColors[$this->_currentColorIndex];
-    	$this->_currentColorIndex = ($this->_currentColorIndex + 1) % count($this->_highlightColors);
+        $color = $this->_highlightColors[$this->_currentColorIndex];
+        $this->_currentColorIndex = ($this->_currentColorIndex + 1) % count($this->_highlightColors);
 
-    	$this->_doc->highlight($words, $color);
+        $this->_doc->highlight($words, $color);
     }
 
 }

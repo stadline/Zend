@@ -15,9 +15,9 @@
  * @category   Zend
  * @package    Zend_Application
  * @subpackage Resource
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: Router.php 18951 2009-11-12 16:26:19Z alexander $
  */
 
 /**
@@ -27,11 +27,10 @@
  * @category   Zend
  * @package    Zend_Application
  * @subpackage Resource
- * @author     Dolf Schimmel
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Application_Resource_Router 
+class Zend_Application_Resource_Router
     extends Zend_Application_Resource_ResourceAbstract
 {
     /**
@@ -59,14 +58,19 @@ class Zend_Application_Resource_Router
         if (null === $this->_router) {
             $bootstrap = $this->getBootstrap();
             $bootstrap->bootstrap('FrontController');
-            $front = $bootstrap->getContainer()->frontcontroller;
+            $this->_router = $bootstrap->getContainer()->frontcontroller->getRouter();
 
             $options = $this->getOptions();
-            if(!isset($options['routes'])) {
+            if (!isset($options['routes'])) {
                 $options['routes'] = array();
             }
 
-            $this->_router = $front->getRouter();
+
+            if (isset($options['chainNameSeparator'])) {
+                $this->_router->setChainNameSeparator($options['chainNameSeparator']);
+            }
+
+
             $this->_router->addConfig(new Zend_Config($options['routes']));
         }
         return $this->_router;

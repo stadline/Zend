@@ -17,7 +17,7 @@
  * @subpackage View
  * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Dijit.php 20118 2010-01-07 14:50:25Z matthew $
+ * @version    $Id: Dijit.php 19108 2009-11-20 17:19:44Z matthew $
  */
 
 /** Zend_View_Helper_HtmlElement */
@@ -220,7 +220,7 @@ abstract class Zend_Dojo_View_Helper_Dijit extends Zend_View_Helper_HtmlElement
                 }
                 break;
             case 'textarea':
-                $stripParams = array('id', 'name', 'type', 'degrade');
+                $stripParams = array('id', 'name', 'type');
                 break;
             default:
         }

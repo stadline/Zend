@@ -17,7 +17,7 @@
  * @subpackage Ec2
  * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: Abstract.php 19978 2009-12-30 15:29:14Z sidhighwind $
  */
 
 require_once 'Zend/Service/Amazon/Abstract.php';
@@ -32,7 +32,7 @@ require_once 'Zend/Service/Amazon/Ec2/Exception.php';
  * @category   Zend
  * @package    Zend_Service_Amazon
  * @subpackage Ec2
- * @copyright  Copyright (c) 22005-2009 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 abstract class Zend_Service_Amazon_Ec2_Abstract extends Zend_Service_Amazon_Abstract
@@ -40,7 +40,7 @@ abstract class Zend_Service_Amazon_Ec2_Abstract extends Zend_Service_Amazon_Abst
     /**
      * The HTTP query server
      */
-    protected $_ec2Endpoint = 'ec2.amazoneaws.com';
+    protected $_ec2Endpoint = 'ec2.amazonaws.com';
 
     /**
      * The API version to use
@@ -163,7 +163,7 @@ abstract class Zend_Service_Amazon_Ec2_Abstract extends Zend_Service_Amazon_Abst
 
         $arrData = array();
         foreach($paramaters as $key => $value) {
-            $arrData[] = $key . '=' . str_replace("%7E", "~", urlencode($value));
+            $arrData[] = $key . '=' . str_replace("%7E", "~", rawurlencode($value));
         }
 
         $data .= implode('&', $arrData);

@@ -14,8 +14,9 @@
  *
  * @category   Zend
  * @package    Zend_Controller
- * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Http.php 19077 2009-11-20 00:29:56Z matthew $
  */
 
 /** Zend_Controller_Request_Abstract */
@@ -82,6 +83,12 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
      * @var array
      */
     protected $_params = array();
+
+    /**
+     * Raw request body
+     * @var string|false
+     */
+    protected $_rawBody;
 
     /**
      * Alias keys for request parameters
@@ -385,6 +392,14 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
         if ($requestUri === null) {
             if (isset($_SERVER['HTTP_X_REWRITE_URL'])) { // check this first so IIS will catch
                 $requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+            } elseif (
+                // IIS7 with URL Rewrite: make sure we get the unencoded url (double slash problem)
+                isset($_SERVER['IIS_WasUrlRewritten'])
+                && $_SERVER['IIS_WasUrlRewritten'] == '1'
+                && isset($_SERVER['UNENCODED_URL'])
+                && $_SERVER['UNENCODED_URL'] != ''
+                ) {
+                $requestUri = $_SERVER['UNENCODED_URL'];
             } elseif (isset($_SERVER['REQUEST_URI'])) {
                 $requestUri = $_SERVER['REQUEST_URI'];
                 // Http proxy reqs setup request uri with scheme and host [and port] + the url path, only use url path
@@ -498,7 +513,8 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
                 return $this;
             }
 
-            if (!strpos($requestUri, basename($baseUrl))) {
+            $basename = basename($baseUrl);
+            if (empty($basename) || !strpos($requestUri, $basename)) {
                 // no match whatsoever; set it blank
                 $this->_baseUrl = '';
                 return $this;
@@ -542,7 +558,9 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
     public function setBasePath($basePath = null)
     {
         if ($basePath === null) {
-            $filename = basename($_SERVER['SCRIPT_FILENAME']);
+            $filename = (isset($_SERVER['SCRIPT_FILENAME']))
+                      ? basename($_SERVER['SCRIPT_FILENAME'])
+                      : '';
 
             $baseUrl = $this->getBaseUrl();
             if (empty($baseUrl)) {
@@ -704,18 +722,25 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
      * Retrieve an array of parameters
      *
      * Retrieves a merged array of parameters, with precedence of userland
-     * params (see {@link setParam()}), $_GET, $POST (i.e., values in the
+     * params (see {@link setParam()}), $_GET, $_POST (i.e., values in the
      * userland params will take precedence over all others).
      *
      * @return array
      */
     public function getParams()
     {
-        $return = $this->_params;
-        if (isset($_GET) && is_array($_GET)) {
+        $return       = $this->_params;
+        $paramSources = $this->getParamSources();
+        if (in_array('_GET', $paramSources)
+            && isset($_GET)
+            && is_array($_GET)
+        ) {
             $return += $_GET;
         }
-        if (isset($_POST) && is_array($_POST)) {
+        if (in_array('_POST', $paramSources)
+            && isset($_POST)
+            && is_array($_POST)
+        ) {
             $return += $_POST;
         }
         return $return;
@@ -915,13 +940,16 @@ class Zend_Controller_Request_Http extends Zend_Controller_Request_Abstract
      */
     public function getRawBody()
     {
-        $body = file_get_contents('php://input');
+        if (null === $this->_rawBody) {
+            $body = file_get_contents('php://input');
 
-        if (strlen(trim($body)) > 0) {
-            return $body;
+            if (strlen(trim($body)) > 0) {
+                $this->_rawBody = $body;
+            } else {
+                $this->_rawBody = false;
+            }
         }
-
-        return false;
+        return $this->_rawBody;
     }
 
     /**

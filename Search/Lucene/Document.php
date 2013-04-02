@@ -17,7 +17,7 @@
  * @subpackage Document
  * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Document.php 16559 2009-07-07 22:56:58Z yoshida@zend.co.jp $
+ * @version    $Id: Document.php 16543 2009-07-07 09:44:56Z yoshida@zend.co.jp $
  */
 
 
