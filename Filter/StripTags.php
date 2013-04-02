@@ -17,7 +17,7 @@
  * @package    Zend_Filter
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: StripTags.php 20137 2010-01-07 22:47:10Z matthew $
+ * @version    $Id: StripTags.php 20148 2010-01-08 16:05:25Z matthew $
  */
 
 
@@ -83,7 +83,35 @@ class Zend_Filter_StripTags implements Zend_Filter_Interface
     {
         $this->setTagsAllowed($tagsAllowed);
         $this->setAttributesAllowed($attributesAllowed);
-        $this->commentsAllowed = (boolean) $commentsAllowed;
+        $this->setCommentsAllowed($commentsAllowed);
+    }
+
+    /**
+     * Returns the commentsAllowed option
+     *
+     * This setting is now deprecated and ignored internally.
+     *
+     * @deprecated
+     * @return bool
+     */
+    public function getCommentsAllowed()
+    {
+        return $this->commentsAllowed;
+    }
+
+    /**
+     * Sets the commentsAllowed option
+     *
+     * This setting is now deprecated and ignored internally.
+     *
+     * @deprecated
+     * @param  boolean $commentsAllowed
+     * @return Zend_Filter_StripTags Provides a fluent interface
+     */
+    public function setCommentsAllowed($commentsAllowed)
+    {
+       $this->commentsAllowed = (boolean) $commentsAllowed;
+       return $this;
     }
 
     /**
@@ -185,7 +213,7 @@ class Zend_Filter_StripTags implements Zend_Filter_Interface
     {
         // Strip HTML comments first
         $valueCopy = preg_replace('#<!--(?:[^<]+|<(?!\!--))*?(--\s*>)#us', '', (string) $value);
-  
+
         // Initialize accumulator for filtered data
         $dataFiltered = '';
         // Parse the input data iteratively as regular pre-tag text followed by a

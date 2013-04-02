@@ -420,6 +420,12 @@ class Zend_Captcha_Image extends Zend_Captcha_Word
     public function generate()
     {
         $id = parent::generate();
+        $tries = 5;
+        // If there's already such file, try creating a new ID
+        while($tries-- && file_exists($this->getImgDir() . $id . $this->getSuffix())) {
+        	$id = $this->_generateRandomId();
+        	$this->_setId($id);
+        }
         $this->_generateImage($id, $this->getWord());
 
         if (mt_rand(1, $this->getGcFreq()) == 1) {
@@ -566,7 +572,12 @@ class Zend_Captcha_Image extends Zend_Captcha_Word
     protected function _gc()
     {
         $expire = time() - $this->getExpiration();
-        foreach (new DirectoryIterator($this->getImgDir()) as $file) {
+        $imgdir = $this->getImgDir();
+        if(!$imgdir || strlen($imgdir) < 2) {
+            // safety guard
+            return;
+        }
+        foreach (new DirectoryIterator($imgdir) as $file) {
             if (!$file->isDot() && !$file->isDir()) {
                 if ($file->getMTime() < $expire) {
                     unlink($file->getPathname());
@@ -578,12 +589,12 @@ class Zend_Captcha_Image extends Zend_Captcha_Word
     /**
      * Display the captcha
      *
-     * @param Zend_View $view
+     * @param Zend_View_Interface $view
      * @param mixed $element
      * @return string
      */
-    public function render(Zend_View_Interface $view, $element = null)
+    public function render(Zend_View_Interface $view = null, $element = null)
     {
-        return '<img alt="'.$this->getImgAlt().'" src="' . $this->getImgUrl() . $this->getId() . $this->getSuffix() . '"/><br/>';
+        return '<img width="'.$this->getWidth().'" height="'.$this->getHeight().'" alt="'.$this->getImgAlt().'" src="' . $this->getImgUrl() . $this->getId() . $this->getSuffix() . '"/><br/>';
     }
 }

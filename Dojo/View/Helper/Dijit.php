@@ -17,7 +17,7 @@
  * @subpackage View
  * @copyright  Copyright (c) 2005-2009 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Dijit.php 20119 2010-01-07 14:55:16Z matthew $
+ * @version    $Id: Dijit.php 20118 2010-01-07 14:50:25Z matthew $
  */
 
 /** Zend_View_Helper_HtmlElement */

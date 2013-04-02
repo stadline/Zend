@@ -513,7 +513,7 @@ class Zend_Gdata_App
             }
             if ($method == 'PUT' || $method == 'DELETE') {
                 $editLink = $data->getEditLink();
-                if ($editLink != null) {
+                if ($editLink != null && $url == null) {
                     $url = $editLink->getHref();
                 }
             }
@@ -1020,8 +1020,11 @@ class Zend_Gdata_App
             $foundClassName = null;
             foreach ($this->_registeredPackages as $name) {
                  try {
-                     @Zend_Loader::loadClass("${name}_${class}");
-                     $foundClassName = "${name}_${class}";
+                     if (!class_exists($name . '_' . $class)) {
+                        require_once 'Zend/Loader.php';
+                        @Zend_Loader::loadClass($name . '_' . $class);
+                     }
+                     $foundClassName = $name . '_' . $class;
                      break;
                  } catch (Zend_Exception $e) {
                      // package wasn't here- continue searching
@@ -1088,15 +1091,11 @@ class Zend_Gdata_App
      * already to use a proxy server or other interface.
      *
      * @param $logfile The logfile to use when logging the requests
-     * @param $adapter (optional) The adapter to use for logging. Default is
-     *        to use Zend_Gdata_App_LoggingHttpClientAdapterSocket.
-     * @return void
      */
-    public function enableRequestDebugLogging($logfile,
-        $adapter = 'Zend_Gdata_App_LoggingHttpClientAdapterSocket')
+    public function enableRequestDebugLogging($logfile)
     {
         $this->_httpClient->setConfig(array(
-            'adapter' => $adapter,
+            'adapter' => 'Zend_Gdata_App_LoggingHttpClientAdapterSocket',
             'logfile' => $logfile
             ));
     }

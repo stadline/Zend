@@ -63,8 +63,11 @@ require_once 'Zend/Search/Lucene/Search/QueryHit.php';
 /** Zend_Search_Lucene_Search_Similarity */
 require_once 'Zend/Search/Lucene/Search/Similarity.php';
 
-/** Zend_Search_Lucene_Index_SegmentInfoPriorityQueue */
-require_once 'Zend/Search/Lucene/Index/SegmentInfoPriorityQueue.php';
+/** Zend_Search_Lucene_Index_TermsPriorityQueue */
+require_once 'Zend/Search/Lucene/Index/TermsPriorityQueue.php';
+
+/** Zend_Search_Lucene_TermStreamsPriorityQueue */
+require_once 'Zend/Search/Lucene/TermStreamsPriorityQueue.php';
 
 /** Zend_Search_Lucene_Index_DocsFilter */
 require_once 'Zend/Search/Lucene/Index/DocsFilter.php';
@@ -348,8 +351,7 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
         }
 
         // read version
-        // $segmentsFile->readLong();
-        $segmentsFile->readInt(); $segmentsFile->readInt();
+        $segmentsFile->readLong();
 
         // read segment name counter
         $segmentsFile->readInt();
@@ -395,8 +397,7 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
         }
 
         // read version
-        // $segmentsFile->readLong();
-        $segmentsFile->readInt(); $segmentsFile->readInt();
+        $segmentsFile->readLong();
 
         // read segment name counter
         $segmentsFile->readInt();
@@ -411,19 +412,12 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
             $segSize = $segmentsFile->readInt();
 
             // 2.1+ specific properties
-            //$delGen          = $segmentsFile->readLong();
-            $delGenHigh        = $segmentsFile->readInt();
-            $delGenLow         = $segmentsFile->readInt();
-            if ($delGenHigh == (int)0xFFFFFFFF  && $delGenLow == (int)0xFFFFFFFF) {
-                $delGen = -1; // There are no deletes
-            } else {
-                $delGen = ($delGenHigh << 32) | $delGenLow;
-            }
+            $delGen = $segmentsFile->readLong();
 
             if ($this->_formatVersion == self::FORMAT_2_3) {
                 $docStoreOffset = $segmentsFile->readInt();
 
-                if ($docStoreOffset != -1) {
+                if ($docStoreOffset != (int)0xFFFFFFFF) {
                     $docStoreSegment        = $segmentsFile->readString();
                     $docStoreIsCompoundFile = $segmentsFile->readByte();
 
@@ -1044,6 +1038,7 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
      *
      * @param integer|Zend_Search_Lucene_Search_QueryHit $id
      * @return Zend_Search_Lucene_Document
+     * @throws Zend_Search_Lucene_Exception    Exception is thrown if $id is out of the range
      */
     public function getDocument($id)
     {
@@ -1412,10 +1407,10 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
     {
         $result = array();
 
-        $segmentInfoQueue = new Zend_Search_Lucene_Index_SegmentInfoPriorityQueue();
+        $segmentInfoQueue = new Zend_Search_Lucene_Index_TermsPriorityQueue();
 
         foreach ($this->_segmentInfos as $segmentInfo) {
-            $segmentInfo->reset();
+            $segmentInfo->resetTermsStream();
 
             // Skip "empty" segments
             if ($segmentInfo->currentTerm() !== null) {
@@ -1442,36 +1437,22 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
 
 
     /**
-     * Terms stream queue
+     * Terms stream priority queue object
      *
-     * @var Zend_Search_Lucene_Index_SegmentInfoPriorityQueue
+     * @var Zend_Search_Lucene_TermStreamsPriorityQueue
      */
-    private $_termsStreamQueue = null;
-
-    /**
-     * Last Term in a terms stream
-     *
-     * @var Zend_Search_Lucene_Index_Term
-     */
-    private $_lastTerm = null;
+    private $_termsStream = null;
 
     /**
      * Reset terms stream.
      */
     public function resetTermsStream()
     {
-        $this->_termsStreamQueue = new Zend_Search_Lucene_Index_SegmentInfoPriorityQueue();
-
-        foreach ($this->_segmentInfos as $segmentInfo) {
-            $segmentInfo->reset();
-
-            // Skip "empty" segments
-            if ($segmentInfo->currentTerm() !== null) {
-                $this->_termsStreamQueue->put($segmentInfo);
-            }
-        }
-
-        $this->nextTerm();
+    	if ($this->_termsStream === null) {
+            $this->_termsStream = new Zend_Search_Lucene_TermStreamsPriorityQueue($this->_segmentInfos);
+    	} else {
+    		$this->_termsStream->resetTermsStream();
+    	}
     }
 
     /**
@@ -1483,21 +1464,7 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
      */
     public function skipTo(Zend_Search_Lucene_Index_Term $prefix)
     {
-        $segments = array();
-
-        while (($segmentInfo = $this->_termsStreamQueue->pop()) !== null) {
-            $segments[] = $segmentInfo;
-        }
-
-        foreach ($segments as $segmentInfo) {
-            $segmentInfo->skipTo($prefix);
-
-            if ($segmentInfo->currentTerm() !== null) {
-                $this->_termsStreamQueue->put($segmentInfo);
-            }
-        }
-
-        $this->nextTerm();
+        $this->_termsStream->skipTo($prefix);
     }
 
     /**
@@ -1507,31 +1474,7 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
      */
     public function nextTerm()
     {
-        while (($segmentInfo = $this->_termsStreamQueue->pop()) !== null) {
-            if ($this->_termsStreamQueue->top() === null ||
-                $this->_termsStreamQueue->top()->currentTerm()->key() !=
-                            $segmentInfo->currentTerm()->key()) {
-                // We got new term
-                $this->_lastTerm = $segmentInfo->currentTerm();
-
-                if ($segmentInfo->nextTerm() !== null) {
-                    // Put segment back into the priority queue
-                    $this->_termsStreamQueue->put($segmentInfo);
-                }
-
-                return $this->_lastTerm;
-            }
-
-            if ($segmentInfo->nextTerm() !== null) {
-                // Put segment back into the priority queue
-                $this->_termsStreamQueue->put($segmentInfo);
-            }
-        }
-
-        // End of stream
-        $this->_lastTerm = null;
-
-        return null;
+        return $this->_termsStream->nextTerm();
     }
 
     /**
@@ -1541,7 +1484,7 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
      */
     public function currentTerm()
     {
-        return $this->_lastTerm;
+        return $this->_termsStream->currentTerm();
     }
 
     /**
@@ -1551,12 +1494,8 @@ class Zend_Search_Lucene implements Zend_Search_Lucene_Interface
      */
     public function closeTermsStream()
     {
-        while (($segmentInfo = $this->_termsStreamQueue->pop()) !== null) {
-            $segmentInfo->closeTermsStream();
-        }
-
-        $this->_termsStreamQueue = null;
-        $this->_lastTerm         = null;
+        $this->_termsStream->closeTermsStream();
+        $this->_termsStream = null;
     }
 
 
