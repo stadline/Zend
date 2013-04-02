@@ -18,7 +18,7 @@
  * @subpackage Zend_OpenId_Provider
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Provider.php 12199 2008-10-30 14:22:47Z dmitry $
+ * @version    $Id: Provider.php 12507 2008-11-10 16:29:09Z matthew $
  */
 
 /**
@@ -145,7 +145,7 @@ class Zend_OpenId_Provider
      */
     public function setOpEndpoint($url)
     {
-    	$this->_opEndpoint = $url;
+        $this->_opEndpoint = $url;
     }
 
     /**
@@ -701,11 +701,11 @@ class Zend_OpenId_Provider
         }
 
         if ($version >= 2.0) {
-        	if (!empty($this->_opEndpoint)) {
-	            $ret['openid.op_endpoint'] = $this->_opEndpoint;
-        	} else {
-	            $ret['openid.op_endpoint'] = Zend_OpenId::selfUrl();
-	        }
+            if (!empty($this->_opEndpoint)) {
+                $ret['openid.op_endpoint'] = $this->_opEndpoint;
+            } else {
+                $ret['openid.op_endpoint'] = Zend_OpenId::selfUrl();
+            }
         }
         $ret['openid.response_nonce'] = gmdate('Y-m-d\TH:i:s\Z') . uniqid();
         $ret['openid.mode'] = 'id_res';

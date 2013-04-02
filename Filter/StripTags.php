@@ -17,7 +17,7 @@
  * @package    Zend_Filter
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: StripTags.php 14359 2009-03-18 13:24:04Z matthew $
+ * @version    $Id: StripTags.php 20137 2010-01-07 22:47:10Z matthew $
  */
 
 
@@ -45,6 +45,9 @@ class Zend_Filter_StripTags implements Zend_Filter_Interface
      *
      * If false (the default), then comments are removed from the input string.
      *
+     * This setting is now deprecated, and ignored internally.
+     *
+     * @deprecated
      * @var boolean
      */
     public $commentsAllowed;
@@ -180,17 +183,9 @@ class Zend_Filter_StripTags implements Zend_Filter_Interface
      */
     public function filter($value)
     {
-        $valueCopy = (string) $value;
-
-        // If comments are allowed, then replace them with unique identifiers
-        if ($this->commentsAllowed) {
-            preg_match_all('/<\!--.*?--\s*>/s' , (string) $valueCopy, $matches);
-            $comments = array_unique($matches[0]);
-            foreach ($comments as $k => $v) {
-                $valueCopy = str_replace($v, self::UNIQUE_ID_PREFIX . $k, $valueCopy);
-            }
-        }
-
+        // Strip HTML comments first
+        $valueCopy = preg_replace('#<!--(?:[^<]+|<(?!\!--))*?(--\s*>)#us', '', (string) $value);
+  
         // Initialize accumulator for filtered data
         $dataFiltered = '';
         // Parse the input data iteratively as regular pre-tag text followed by a
@@ -211,13 +206,6 @@ class Zend_Filter_StripTags implements Zend_Filter_Interface
             }
             // Add the filtered pre-tag text and filtered tag to the data buffer
             $dataFiltered .= $preTag . $tagFiltered;
-        }
-
-        // If comments are allowed, then replace the unique identifiers with the corresponding comments
-        if ($this->commentsAllowed) {
-            foreach ($comments as $k => $v) {
-                $dataFiltered = str_replace(self::UNIQUE_ID_PREFIX . $k, $v, $dataFiltered);
-            }
         }
 
         // Return the filtered data

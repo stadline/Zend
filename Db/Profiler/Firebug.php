@@ -44,7 +44,7 @@ class Zend_Db_Profiler_Firebug extends Zend_Db_Profiler
      * @var string
      */
     protected $_label = null;
-  
+    
     /**
      * The label template for this profiler
      * @var string
@@ -95,6 +95,7 @@ class Zend_Db_Profiler_Firebug extends Zend_Db_Profiler
                 $this->_message->setBuffered(true);
                 $this->_message->setHeader(array('Time','Event','Parameters'));
                 $this->_message->setDestroy(true);
+                $this->_message->setOption('includeLineNumbers', false);
                 Zend_Wildfire_Plugin_FirePhp::getInstance()->send($this->_message);
             }
 
@@ -124,7 +125,7 @@ class Zend_Db_Profiler_Firebug extends Zend_Db_Profiler
         if (!$this->getEnabled()) {
             return;
         }
-        
+
         $this->_message->setDestroy(false);
 
         $profile = $this->getQueryProfile($queryId);

@@ -411,9 +411,16 @@ class Zend_View_Helper_HeadScript extends Zend_View_Helper_Placeholder_Container
         $type = ($this->_autoEscape) ? $this->_escape($item->type) : $item->type;
         $html  = $indent . '<script type="' . $type . '"' . $attrString . '>';
         if (!empty($item->source)) {
-              $html .= PHP_EOL . $indent . $escapeStart . PHP_EOL . $indent . $indent . $item->source . PHP_EOL . $indent . $escapeEnd . PHP_EOL . $indent;
+              $html .= PHP_EOL . $indent . '    ' . $escapeStart . PHP_EOL . $item->source . $indent . '    ' . $escapeEnd . PHP_EOL . $indent;
         }
         $html .= '</script>';
+
+        if (isset($item->attributes['conditional'])
+            && !empty($item->attributes['conditional'])
+            && is_string($item->attributes['conditional']))
+        {
+            $html = '<!--[if ' . $item->attributes['conditional'] . ']> ' . $html . '<![endif]-->';
+        }
 
         return $html;
     }
@@ -439,6 +446,7 @@ class Zend_View_Helper_HeadScript extends Zend_View_Helper_Placeholder_Container
         $escapeEnd   = ($useCdata) ? '//]]>'       : '//-->';
 
         $items = array();
+        $this->getContainer()->ksort();
         foreach ($this as $item) {
             if (!$this->_isValid($item)) {
                 continue;
@@ -447,8 +455,7 @@ class Zend_View_Helper_HeadScript extends Zend_View_Helper_Placeholder_Container
             $items[] = $this->itemToString($item, $indent, $escapeStart, $escapeEnd);
         }
 
-        $return = $indent . implode($this->getSeparator() . $indent, $items);
-        $return = preg_replace("/(\r\n?|\n)/", '$1' . $indent, $return);
+        $return = implode($this->getSeparator(), $items);
         return $return;
     }
 
