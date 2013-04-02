@@ -18,7 +18,7 @@
  * @subpackage Delicious
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Delicious.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Delicious.php 8064 2008-02-16 10:58:39Z thomas $
  */
 
 
@@ -456,10 +456,11 @@ class Zend_Service_Delicious
     /**
      * Handles all GET requests to a web service
      *
-     * @param  string $path  Path
-     * @param  array  $parms Array of GET parameters
-     * @param  string $type  Type of a request ("xml"|"json")
-     * @return mixed  decoded response from web service
+     * @param   string $path  Path
+     * @param   array  $parms Array of GET parameters
+     * @param   string $type  Type of a request ("xml"|"json")
+     * @return  mixed  decoded response from web service
+     * @throws  Zend_Service_Delicious_Exception
      */
     public function makeRequest($path, array $parms = array(), $type = 'xml')
     {
@@ -522,12 +523,13 @@ class Zend_Service_Delicious
     /**
      * Transform XML string to array
      *
-     * @param  DOMDocument $response
-     * @param  string      $root     Name of root tag
-     * @param  string      $child    Name of children tags
-     * @param  string      $attKey   Attribute of child tag to be used as a key
-     * @param  string      $attValue Attribute of child tag to be used as a value
-     * @return array
+     * @param   DOMDocument $response
+     * @param   string      $root     Name of root tag
+     * @param   string      $child    Name of children tags
+     * @param   string      $attKey   Attribute of child tag to be used as a key
+     * @param   string      $attValue Attribute of child tag to be used as a value
+     * @return  array
+     * @throws  Zend_Service_Delicious_Exception
      */
     private static function _xmlResponseToArray(DOMDocument $response, $root, $child, $attKey, $attValue)
     {
@@ -557,8 +559,9 @@ class Zend_Service_Delicious
     /**
      * Constructs Zend_Service_Delicious_PostList from XML response
      *
-     * @param  DOMDocument $response
-     * @return Zend_Service_Delicious_PostList
+     * @param   DOMDocument $response
+     * @return  Zend_Service_Delicious_PostList
+     * @throws  Zend_Service_Delicious_Exception
      */
     private function _parseXmlPostList(DOMDocument $response)
     {
@@ -578,8 +581,9 @@ class Zend_Service_Delicious
     /**
      * Evaluates XML response
      *
-     * @param  DOMDocument $response
-     * @return void
+     * @param   DOMDocument $response
+     * @return  void
+     * @throws  Zend_Service_Delicious_Exception
      */
     private static function _evalXmlResult(DOMDocument $response)
     {

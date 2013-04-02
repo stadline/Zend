@@ -18,7 +18,7 @@
  * @subpackage Simpy
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: TagSet.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: TagSet.php 8064 2008-02-16 10:58:39Z thomas $
  */
 
 
@@ -64,12 +64,11 @@ class Zend_Service_Simpy_TagSet implements IteratorAggregate
     /**
      * Returns an iterator for the tag set
      *
-     * @return IteratorIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {
-        $array = new ArrayObject($this->_tags);
-        return $array->getIterator();
+        return new ArrayIterator($this->_tags);
     }
 
     /**

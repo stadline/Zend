@@ -17,7 +17,7 @@
  * @package    Zend_Feed
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Element.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Element.php 8064 2008-02-16 10:58:39Z thomas $
  */
 
 
@@ -126,7 +126,7 @@ class Zend_Feed_Element implements ArrayAccess
      *
      * @return string
      */
-    public function saveXML()
+    public function saveXml()
     {
         // Return a complete document including XML prologue.
         $doc = new DOMDocument($this->_element->ownerDocument->version,
@@ -143,7 +143,7 @@ class Zend_Feed_Element implements ArrayAccess
      *
      * @return string
      */
-    public function saveXMLFragment()
+    public function saveXmlFragment()
     {
         return $this->_element->ownerDocument->saveXML($this->_element);
     }
@@ -194,6 +194,7 @@ class Zend_Feed_Element implements ArrayAccess
      * @param  string $var The property to change.
      * @param  string $val The property's new value.
      * @return void
+     * @throws Zend_Feed_Exception
      */
     public function __set($var, $val)
     {
@@ -210,6 +211,10 @@ class Zend_Feed_Element implements ArrayAccess
                 $this->_element->appendChild($node);
             }
         } elseif (count($nodes) > 1) {
+            /** 
+             * @see Zend_Feed_Exception
+             */
+            require_once 'Zend/Feed/Exception.php';
             throw new Zend_Feed_Exception('Cannot set the value of multiple tags simultaneously.');
         } else {
             $nodes[0]->nodeValue = $val;

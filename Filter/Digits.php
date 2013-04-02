@@ -17,7 +17,7 @@
  * @package    Zend_Filter
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Digits.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Digits.php 8732 2008-03-10 15:21:46Z darby $
  */
 
 
@@ -47,7 +47,6 @@ class Zend_Filter_Digits implements Zend_Filter_Interface
      *
      * Checks if PCRE is compiled with UTF-8 and Unicode support
      *
-     * @param  boolean $allowWhiteSpace
      * @return void
      */
     public function __construct()
@@ -68,9 +67,13 @@ class Zend_Filter_Digits implements Zend_Filter_Interface
     public function filter($value)
     {
         if (!self::$_unicodeEnabled) {
-            // POSIX named classes are not supported, use alternative a-zA-Z0-9 match
+            // POSIX named classes are not supported, use alternative 0-9 match
             $pattern = '/[^0-9]/';
+        } else if (extension_loaded('mbstring')) {
+            // Filter for the value with mbstring
+            $pattern = '/[^[:digit:]]/';
         } else {
+            // Filter for the value without mbstring
             $pattern = '/[\p{^N}]/';
         }
 

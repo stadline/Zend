@@ -17,7 +17,7 @@
  * @package    Zend_Validate
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Ip.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Ip.php 8064 2008-02-16 10:58:39Z thomas $
  */
 
 
@@ -59,7 +59,7 @@ class Zend_Validate_Ip extends Zend_Validate_Abstract
 
         $this->_setValue($valueString);
 
-        if (!ip2long($valueString)) {
+        if (ip2long($valueString) === false) {
             $this->_error();
             return false;
         }

@@ -183,17 +183,17 @@ class Zend_Mime_Decode
      */
     public static function splitHeaderField($field, $wantedPart = null, $firstName = 0)
     {
-        $wantedPart = strtolower($wantedPart);
-        $firstName = strtolower($firstName);
+    	$wantedPart = strtolower($wantedPart);
+    	$firstName = strtolower($firstName);
 
         // special case - a bit optimized
         if ($firstName === $wantedPart) {
             $field = strtok($field, ';');
             return $field[0] == '"' ? substr($field, 1, -1) : $field;
         }
-
+        
         $field = $firstName . '=' . $field;
-        if (!preg_match_all('%([^=]+)=("[^"]+"|[^;]+)(;\s*|$)%', $field, $matches)) {
+        if (!preg_match_all('%([^=\s]+)\s*=("[^"]+"|[^;]+)(;\s*|$)%', $field, $matches)) {
             throw new Zend_Exception('not a valid header field');
         }
 
@@ -212,7 +212,7 @@ class Zend_Mime_Decode
 
         $split = array();
         foreach ($matches[1] as $key => $name) {
-            $name = strtolower($name);
+        	$name = strtolower($name);
             if ($matches[2][$key][0] == '"') {
                 $split[$name] = substr($matches[2][$key], 1, -1);
             } else {

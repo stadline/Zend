@@ -15,7 +15,7 @@
  * @package    Zend_Controller
  * @subpackage Router
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
- * @version    $Id: Module.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Module.php 8972 2008-03-21 18:48:44Z thomas $
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
@@ -42,7 +42,7 @@ require_once 'Zend/Controller/Request/Abstract.php';
 class Zend_Controller_Router_Route_Module implements Zend_Controller_Router_Route_Interface
 {
     /**
-     * @const string URI delimiter
+     * URI delimiter
      */
     const URI_DELIMITER = '/';
 

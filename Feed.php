@@ -17,7 +17,7 @@
  * @package    Zend_Feed
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Feed.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Feed.php 10386 2008-07-24 20:14:17Z matthew $
  */
 
 
@@ -192,11 +192,11 @@ class Zend_Feed
     {
         // Load the feed as an XML DOMDocument object
         @ini_set('track_errors', 1);
-        $doc = new DOMDocument();
-        $success = @$doc->loadXML($string);
+        $doc = new DOMDocument;
+        $status = @$doc->loadXML($string);
         @ini_restore('track_errors');
 
-        if (!$success) {
+        if (!$status) {
             // prevent the class to generate an undefined variable notice (ZF-2590)
             if (!isset($php_errormsg)) {
                 if (function_exists('xdebug_is_enabled')) {
@@ -205,7 +205,7 @@ class Zend_Feed
                     $php_errormsg = '(error message not available)';
                 }
             }
-            
+
             /**
              * @see Zend_Feed_Exception
              */

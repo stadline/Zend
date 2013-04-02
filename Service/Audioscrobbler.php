@@ -18,7 +18,7 @@
  * @subpackage Audioscrobbler
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Audioscrobbler.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Audioscrobbler.php 9125 2008-04-03 21:22:31Z thomas $
  */
 
 
@@ -27,11 +27,6 @@
  */
 require_once 'Zend/Http/Client.php';
 
-/**
- * @see Zend_Http_Client_Exception
- */
-require_once 'Zend/Http/Client/Exception.php';
-
 
 /**
  * @category   Zend
@@ -39,8 +34,6 @@ require_once 'Zend/Http/Client/Exception.php';
  * @subpackage Audioscrobbler
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @author     Chris Hartjes chartjes@littlehart.net (ZCE # 901167)
- * @author     Derek Martin  derek@geekunity.com (ZCE # 901168)
  */
 class Zend_Service_Audioscrobbler
 {
@@ -179,10 +172,22 @@ class Zend_Service_Audioscrobbler
         $responseBody = $response->getBody();
 
         if (preg_match('/No such path/', $responseBody)) {
+            /**
+             * @see Zend_Http_Client_Exception
+             */
+            require_once 'Zend/Http/Client/Exception.php';
             throw new Zend_Http_Client_Exception('Could not find: ' . $this->_client->getUri());
         } elseif (preg_match('/No user exists with this name/', $responseBody)) {
+            /**
+             * @see Zend_Http_Client_Exception
+             */
+            require_once 'Zend/Http/Client/Exception.php';
             throw new Zend_Http_Client_Exception('No user exists with this name');
         } elseif (!$response->isSuccessful()) {
+            /**
+             * @see Zend_Http_Client_Exception
+             */
+            require_once 'Zend/Http/Client/Exception.php';
             throw new Zend_Http_Client_Exception('The web service ' . $this->_client->getUri() . ' returned the following status code: ' . $response->getStatus());
         }
 

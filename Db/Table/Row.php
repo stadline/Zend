@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -18,7 +17,7 @@
  * @subpackage Table
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Row.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Row.php 9136 2008-04-04 13:58:29Z thomas $
  */
 
 

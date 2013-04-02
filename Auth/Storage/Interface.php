@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -15,15 +14,17 @@
  *
  * @category   Zend
  * @package    Zend_Auth
+ * @subpackage Zend_Auth_Storage
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Interface.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Interface.php 8964 2008-03-21 17:53:14Z thomas $
  */
 
 
 /**
  * @category   Zend
  * @package    Zend_Auth
+ * @subpackage Zend_Auth_Storage
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */

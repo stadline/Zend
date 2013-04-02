@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -15,9 +14,10 @@
  *
  * @category   Zend
  * @package    Zend_Auth
+ * @subpackage Zend_Auth_Adapter
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Digest.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Digest.php 9669 2008-06-11 08:23:41Z doctorrock83 $
  */
 
 
@@ -30,6 +30,7 @@ require_once 'Zend/Auth/Adapter/Interface.php';
 /**
  * @category   Zend
  * @package    Zend_Auth
+ * @subpackage Zend_Auth_Adapter
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */

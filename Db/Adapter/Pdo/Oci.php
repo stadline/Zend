@@ -17,17 +17,15 @@
  * @subpackage Adapter
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id: Oci.php 9538 2008-05-26 22:09:08Z peptolab $
  */
 
+
 /**
- * Zend_Db_Adapter_Pdo
+ * @see Zend_Db_Adapter_Pdo_Abstract
  */
 require_once 'Zend/Db/Adapter/Pdo/Abstract.php';
 
-/**
- * Zend_Db_Adapter_Exception
- */
-require_once 'Zend/Db/Adapter/Exception.php';
 
 /**
  * Class for connecting to Oracle databases and performing common operations.
@@ -122,7 +120,7 @@ class Zend_Db_Adapter_Pdo_Oci extends Zend_Db_Adapter_Pdo_Abstract
      * @param string $alias An alias for the table.
      * @return string The quoted identifier and alias.
      */
-    public function quoteTableAs($ident, $alias, $auto=false)
+    public function quoteTableAs($ident, $alias = null, $auto = false)
     {
         // Oracle doesn't allow the 'AS' keyword between the table identifier/expression and alias.
         return $this->_quoteIdentifierAs($ident, $alias, $auto, ' ');
@@ -303,17 +301,22 @@ class Zend_Db_Adapter_Pdo_Oci extends Zend_Db_Adapter_Pdo_Abstract
      * @param string $sql
      * @param integer $count
      * @param integer $offset
+     * @throws Zend_Db_Adapter_Exception
      * @return string
      */
     public function limit($sql, $count, $offset = 0)
     {
         $count = intval($count);
         if ($count <= 0) {
+            /** @see Zend_Db_Adapter_Exception */
+            require_once 'Zend/Db/Adapter/Exception.php';
             throw new Zend_Db_Adapter_Exception("LIMIT argument count=$count is not valid");
         }
 
         $offset = intval($offset);
         if ($offset < 0) {
+            /** @see Zend_Db_Adapter_Exception */
+            require_once 'Zend/Db/Adapter/Exception.php';
             throw new Zend_Db_Adapter_Exception("LIMIT argument offset=$offset is not valid");
         }
 

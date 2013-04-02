@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Zend Framework
  *
@@ -18,7 +17,7 @@
  * @subpackage Adapter
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Mssql.php 8069 2008-02-16 19:11:06Z thomas $
+ * @version    $Id: Mssql.php 9136 2008-04-04 13:58:29Z thomas $
  */
 
 
@@ -135,6 +134,44 @@ class Zend_Db_Adapter_Pdo_Mssql extends Zend_Db_Adapter_Pdo_Abstract
         }
         parent::_connect();
         $this->_connection->exec('SET QUOTED_IDENTIFIER ON');
+    }
+
+    /**
+     * Begin a transaction.
+     *
+     * It is necessary to override the abstract PDO transaction functions here, as
+     * the PDO driver for MSSQL does not support transactions.
+     */
+    protected function _beginTransaction()
+    {
+        $this->_connect();
+        $this->_connection->exec('BEGIN TRANSACTION');
+        return true;
+    }
+
+    /**
+     * Commit a transaction.
+     *
+     * It is necessary to override the abstract PDO transaction functions here, as
+     * the PDO driver for MSSQL does not support transactions.
+     */
+    protected function _commit()
+    {
+        $this->_connect();
+        $this->_connection->exec('COMMIT TRANSACTION');
+        return true;
+    }
+
+    /**
+     * Roll-back a transaction.
+     *
+     * It is necessary to override the abstract PDO transaction functions here, as
+     * the PDO driver for MSSQL does not support transactions.
+     */
+    protected function _rollBack() {
+        $this->_connect();
+        $this->_connection->exec('ROLLBACK TRANSACTION');
+        return true;
     }
 
     /**

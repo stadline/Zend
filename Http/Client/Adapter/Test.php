@@ -15,7 +15,7 @@
  * @category   Zend
  * @package    Zend_Http
  * @subpackage Client_Adapter
- * @version    $Id: Test.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: Test.php 8064 2008-02-16 10:58:39Z thomas $
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
@@ -76,9 +76,11 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
      */
     public function setConfig($config = array())
     {
-        if (! is_array($config))
+        if (! is_array($config)) {
+            require_once 'Zend/Http/Client/Adapter/Exception.php';
             throw new Zend_Http_Client_Adapter_Exception(
                 '$config expects an array, ' . gettype($config) . ' recieved.');
+        }
 
         foreach ($config as $k => $v) {
             $this->config[strtolower($k)] = $v;
@@ -182,6 +184,7 @@ class Zend_Http_Client_Adapter_Test implements Zend_Http_Client_Adapter_Interfac
     public function setResponseIndex($index)
     {
         if ($index < 0 || $index >= count($this->responses)) {
+            require_once 'Zend/Http/Client/Adapter/Exception.php';
             throw new Zend_Http_Client_Adapter_Exception(
                 'Index out of range of response buffer size');
         }

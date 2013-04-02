@@ -19,6 +19,9 @@
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
+/**
+ * @see Zend_Loader
+ */
 require_once 'Zend/Loader.php';
 
 
@@ -114,7 +117,7 @@ class Zend_Translate {
         $this->_adapter = new $adapter($data, $locale, $options);
         if (!$this->_adapter instanceof Zend_Translate_Adapter) {
             require_once 'Zend/Translate/Exception.php';
-            throw new Zend_Translate_Exception("Adapter " . $adapter . " does not extend Zend_Translate_Adapter'");
+            throw new Zend_Translate_Exception("Adapter " . $adapter . " does not extend Zend_Translate_Adapter");
         }
     }
 
@@ -129,17 +132,26 @@ class Zend_Translate {
         return $this->_adapter;
     }
 
-
     /**
      * Sets a cache for all instances of Zend_Translate
      *
-     * @param Zend_Cache_Core $cache Cache to store to
+     * @param  Zend_Cache_Core $cache Cache to store to
+     * @return void
      */
     public static function setCache(Zend_Cache_Core $cache)
     {
         self::$_cache = $cache;
     }
 
+    /**
+     * Returns the set cache
+     *
+     * @return Zend_Cache_Core The set cache
+     */
+    public static function getCache()
+    {
+        return self::$_cache;
+    }
 
     /**
      * Calls all methods from the adapter

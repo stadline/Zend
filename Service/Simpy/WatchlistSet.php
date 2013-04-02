@@ -18,7 +18,7 @@
  * @subpackage Simpy
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: WatchlistSet.php 8055 2008-02-15 21:42:54Z thomas $
+ * @version    $Id: WatchlistSet.php 8064 2008-02-16 10:58:39Z thomas $
  */
 
 
@@ -63,12 +63,11 @@ class Zend_Service_Simpy_WatchlistSet implements IteratorAggregate
     /**
      * Returns an iterator for the watchlist set
      *
-     * @return IteratorIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {
-        $array = new ArrayObject($this->_watchlists);
-        return $array->getIterator();
+        return new ArrayIterator($this->_watchlists);
     }
 
     /**
