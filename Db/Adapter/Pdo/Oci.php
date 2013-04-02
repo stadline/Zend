@@ -17,7 +17,7 @@
  * @subpackage Adapter
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Oci.php 9538 2008-05-26 22:09:08Z peptolab $
+ * @version    $Id: Oci.php 11943 2008-10-13 20:47:14Z mikaelkael $
  */
 
 
@@ -110,7 +110,8 @@ class Zend_Db_Adapter_Pdo_Oci extends Zend_Db_Adapter_Pdo_Abstract
         if (is_int($value) || is_float($value)) {
             return $value;
         }
-        return "'" . addcslashes($value, "\000\n\r\\'\"\032") . "'";
+        $value = str_replace("'", "''", $value);
+        return "'" . addcslashes($value, "\000\n\r\\\032") . "'";
     }
 
     /**
@@ -292,7 +293,8 @@ class Zend_Db_Adapter_Pdo_Oci extends Zend_Db_Adapter_Pdo_Abstract
             $sequenceName .= $this->foldCase('_seq');
             return $this->lastSequenceId($sequenceName);
         }
-        return $this->_connection->lastInsertId($tableName);
+        // No support for IDENTITY columns; return null
+        return null;
     }
 
     /**

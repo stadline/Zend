@@ -156,7 +156,6 @@ abstract class Zend_Translate_Adapter {
                         if (Zend_Locale::isLocale((string) $filename)) {
                             $locale = (string) $filename;
                         } else {
-                            $found = false;
                             $parts  = explode('.', $filename);
                             $parts2 = array();
                             foreach($parts as $token) {
@@ -196,7 +195,7 @@ abstract class Zend_Translate_Adapter {
                 $this->setLocale($locale);
             }
         }
-        if ((isset($translate[$originate]) === true) and (count($this->_translate[$originate]) > 0)) {
+        if ((isset($this->_translate[$originate]) === true) and (count($this->_translate[$originate]) > 0)) {
             $this->setLocale($originate);
         }
         return $this;
@@ -269,16 +268,23 @@ abstract class Zend_Translate_Adapter {
             throw new Zend_Translate_Exception("The given Language ({$locale}) does not exist");
         }
 
-        if (empty($this->_translate[$locale]) === true) {
+        $locale = (string) $locale;
+        if (!isset($this->_translate[$locale])) {
             $temp = explode('_', $locale);
-            if (isset($this->_translate[$temp[0]]) === false) {
+            if (!isset($this->_translate[$temp[0]]) and !isset($this->_translate[$locale])) {
                 /**
                  * @see Zend_Translate_Exception
                  */
                 require_once 'Zend/Translate/Exception.php';
-                throw new Zend_Translate_Exception("Language ({$locale}) has to be added before it can be used.");
+                throw new Zend_Translate_Exception("The language '{$locale}' has to be added before it can be used.");
             }
+
             $locale = $temp[0];
+        }
+
+        if (empty($this->_translate[$locale])) {
+            // throwing a notice due to possible problems on locale setting
+            trigger_error("No translation for the language '{$locale}' available.", E_USER_NOTICE);
         }
 
         $this->_options['locale'] = $locale;
@@ -300,7 +306,7 @@ abstract class Zend_Translate_Adapter {
     {
         $list = array_keys($this->_translate);
         $result = null;
-        foreach($list as $key => $value) {
+        foreach($list as $value) {
             if (!empty($this->_translate[$value])) {
                 $result[$value] = $value;
             }

@@ -17,7 +17,7 @@
  * @package    Zend_Filter
  * @copyright  Copyright (c) 2005-2008 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: StripTags.php 14360 2009-03-18 13:24:46Z matthew $
+ * @version    $Id: StripTags.php 14359 2009-03-18 13:24:04Z matthew $
  */
 
 
